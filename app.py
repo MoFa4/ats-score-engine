@@ -1,7 +1,6 @@
 import re
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
-import os
 
 # Optional PDF/TXT extraction
 try:
