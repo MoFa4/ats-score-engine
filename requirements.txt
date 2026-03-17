@@ -1,6 +1,4 @@
 Flask
 PyPDF2
 werkzeug.utils
-re
-os
-
+requests
