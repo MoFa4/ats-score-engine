@@ -79,6 +79,7 @@ h1::after {
 /* Form Styles */
 textarea, input[type="file"] {
     width: 100%;
+    box-sizing: border-box;
     padding: 14px;
     border-radius: 10px;
     border: 2px solid var(--accent-purple);
