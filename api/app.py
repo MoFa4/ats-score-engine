@@ -127,5 +127,4 @@ def home():
         score=score,
         chances=chances
     )
-def handler(request):
-    app = app
+app = app
