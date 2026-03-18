@@ -10,7 +10,6 @@ except ImportError:
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "uploads"
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 # -------------------------------
 # 🔥 Master Skill Array (500+)
