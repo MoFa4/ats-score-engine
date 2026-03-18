@@ -128,4 +128,4 @@ def home():
         chances=chances
     )
 def handler(request):
-    return app
+    app = app
