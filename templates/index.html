@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Anime ATS Score Engine</title>
     <title>ATS Score Engine</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>🚀 Anime ATS Score Engine</h1>
-        <h1>🚀 ATS Score Engine</h1>
+<div class="container">
 
-        <!-- 🔽 Resume PDF Upload -->
-        <form method="POST" enctype="multipart/form-data">
-            <label style="font-weight:bold;">Upload Resume (PDF/TXT):</label><br>
-            <input type="file" name="resume_pdf"><br><br>
+    <h1>ATS Score Engine</h1>
 
-            <label>Paste Resume Text:</label><br>
-            <textarea name="resume" rows="7" placeholder="Paste your resume here..."></textarea><br><br>
-            <textarea name="resume">{{ resume_text }}</textarea><br>
+    <form method="POST" enctype="multipart/form-data">
 
-            <label>Paste Job Description:</label><br>
-            <textarea name="jobdesc" rows="7" placeholder="Paste job description here..."></textarea><br><br>
-            <textarea name="jobdesc">{{ jd_text }}</textarea><br>
+        <label>Resume</label>
+        <textarea name="resume">{{ resume_text }}</textarea>
+        <input type="file" name="resume_file">
 
-            <button type="submit">Calculate</button>
-        </form>
+        <label>Job Description</label>
+        <textarea name="jobdesc">{{ jd_text }}</textarea>
 
-        <div class="input-section">
-            <label>Resume</label>
-            <textarea name="resume"></textarea>
+        <button type="submit">Calculate</button>
+    </form>
 
-            <input type="file" name="resume_file">
-        </div>
+    <div class="result-box">
+        <h3>Predicted Score</h3>
+        <p>{{ score }}</p>
 
-        <!-- -------------------------- -->
-        <!-- 🔥 Results Section (Always Visible) -->
-        <!-- -------------------------- -->
- <h2>ATS Analysis</h2>
+        <h3>Chances of Shortlist</h3>
+        <p>{{ chances }}</p>
 
+        <h3>Matched Skills</h3>
+        <p>{{ matched }}</p>
+
+        <h3>Missing Skills</h3>
+        <p>{{ missing }}</p>
+
+        <h3>Extra Skills</h3>
+        <p>{{ extra }}</p>
     </div>
+
+</div>
+
 </body>
-</html>
 </html>
