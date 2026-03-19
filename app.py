@@ -78,9 +78,11 @@ def extract_text_from_file(file):
     filename = file.filename.lower()
 
     try:
+        # TXT file
         if filename.endswith(".txt"):
-            text = file.read().decode("utf-8")
+            return file.read().decode("utf-8")
 
+        # PDF file
         elif filename.endswith(".pdf") and PyPDF2:
             text = ""
             reader = PyPDF2.PdfReader(file)
@@ -88,38 +90,16 @@ def extract_text_from_file(file):
             for page in reader.pages:
                 extracted = page.extract_text()
                 if extracted:
-                    text += extracted + "\n"
+                    text += extracted + " "
 
-        else:
-            return ""
-
-        text = text.lower()
-
-        # 🔥 STEP 1: Try to extract SKILLS section
-        skills_section = ""
-
-        patterns = [
-            r"skills(.*?)(education|experience|projects|certifications|$)",
-            r"technical skills(.*?)(education|experience|projects|$)",
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, text, re.DOTALL)
-            if match:
-                skills_section = match.group(1)
-                break
-
-        # 🔥 STEP 2: fallback → full text
-        if skills_section.strip():
-            return skills_section.strip()
-
-        return text
+            # 🔥 clean text properly
+            text = re.sub(r"\s+", " ", text)
+            return text.strip()
 
     except Exception as e:
         print("PDF error:", e)
 
     return ""
-
 # -------------------------------
 # 🚀 Main Route
 # -------------------------------
@@ -145,8 +125,8 @@ def home():
         if resume_file and resume_file.filename != "":
             extracted_text = extract_text_from_file(resume_file)
 
-            if extracted_text.strip():
-                resume_text = extracted_text  # replace textarea content
+        if extracted_text:
+            resume_text = extracted_text   # 🔥 THIS is the key line  # replace textarea content
 
         # Extract skills
         resume_skills = extract_skills(resume_text)
