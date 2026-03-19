@@ -2,54 +2,43 @@
 <html>
 <head>
     <title>ATS Score Engine</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+<div class="container">
+    <h1>📝 ATS Score Engine</h1>
+    <p>Paste your Resume & Job Description or upload PDF/TXT files to get a score and skills analysis.</p>
 
-    <div class="container">
-        <h1>🚀 ATS Score Engine</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label>Resume (Text)</label>
+        <textarea name="resume" placeholder="Paste your resume here...">{{ resume_text }}</textarea>
+        <label>OR Upload Resume File</label>
+        <input type="file" name="resume_file" accept=".txt,.pdf">
 
-        <!-- 🔽 Resume PDF Upload -->
-        <form method="POST" enctype="multipart/form-data">
-            <label style="font-weight:bold;">Upload Resume (PDF/TXT):</label><br>
-            <input type="file" name="resume_file" accept=".pdf,.txt"><br><br>
+        <label>Job Description (Text)</label>
+        <textarea name="jobdesc" placeholder="Paste the job description here...">{{ jd_text }}</textarea>
+        <label>OR Upload JD File</label>
+        <input type="file" name="jd_file" accept=".txt,.pdf">
 
-            <label>Paste Resume Text:</label><br>
-            <textarea name="resume" rows="10">{{ resume_text }}</textarea><br>
+        <button type="submit">Analyze</button>
+    </form>
 
-            <label>Paste Job Description:</label><br>
-            <textarea name="jobdesc">{{ jd_text }}</textarea><br>
+    {% if score != 0 %}
+    <div class="results">
+        <h2>📊 Results</h2>
+        <p><b>Score:</b> {{ score }}%</p>
+        <p><b>Shortlisting Chances:</b> {{ chances }}</p>
 
-            <button type="submit">Calculate</button>
-        </form>
+        <h3>Matched Skills</h3>
+        <p>{{ matched|join(", ") }}</p>
 
-        
+        <h3>Missing Skills</h3>
+        <p>{{ missing|join(", ") }}</p>
 
-        <!-- -------------------------- -->
-        <!-- 🔥 Results Section (Always Visible) -->
-        <!-- -------------------------- -->
-        <div class="results">
-            <h2>ATS Analysis</h2>
-            <p><b>Predicted Score:</b> {% if score != 0 %}{{ score }}%{% else %}--{% endif %}</p>
-            <p><b>Chances of Shortlist:</b> {% if chances != "N/A" %}{{ chances }}{% else %}--{% endif %}</p>
-            <p><b>Matched Skills:</b> 
-                {% if matched %} 
-                    {% for skill in matched %}<span class="matched">{{ skill }}</span>{% endfor %}
-                {% else %}--{% endif %}
-            </p>
-            <p><b>Missing Skills:</b> 
-                {% if missing %}
-                    {% for skill in missing %}<span class="missing">{{ skill }}</span>{% endfor %}
-                {% else %}--{% endif %}
-            </p>
-            <p><b>Extra Skills:</b> 
-                {% if extra %}
-                    {% for skill in extra %}<span class="extra">{{ skill }}</span>{% endfor %}
-                {% else %}--{% endif %}
-            </p>
-        </div>
-
+        <h3>Extra Skills</h3>
+        <p>{{ extra|join(", ") }}</p>
     </div>
+    {% endif %}
+</div>
 </body>
 </html>
