@@ -166,3 +166,54 @@ button:hover {
 body {
     cursor: url('https://i.imgur.com/lr2Hq7O.png'), auto; /* tiny anime star / pointer */
 }
+
+/* 🔥 Container Fix */
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 15px;
+}
+
+/* 🧾 Textareas (resume + JD) */
+textarea {
+    width: 100%;
+    min-height: 180px; /* ~7 lines */
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* 📱 Mobile Fix */
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    textarea {
+        min-height: 160px;
+        font-size: 14px;
+    }
+
+    input, button {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .result-box {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* 🧩 Prevent overflow issues */
+* {
+    box-sizing: border-box;
+}
+
+/* 📦 Fix for upload + boxes alignment */
+form {
+    width: 100%;
+}
