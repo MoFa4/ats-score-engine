@@ -1,20 +1,17 @@
 import re
 from flask import Flask, render_template, request
-from werkzeug.utils import secure_filename
-import os
 
-# Optional PDF/TXT extraction
+# Optional PDF support
 try:
     import PyPDF2
 except ImportError:
     PyPDF2 = None
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "uploads"
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
 # -------------------------------
-# 🔥 Master Skill Array (500+)
+# 🔥 Skill List
+# 🔥 Skill List (unchanged)
 # -------------------------------
 SKILLS = [
     # --- IT & SOFTWARE DEVELOPMENT ---
@@ -56,91 +53,86 @@ SKILLS = [
     "Team Leadership","Emotional Intelligence","Conflict Resolution","Critical Thinking",
     "Adaptability","Time Management","Intercultural Communication","Mentoring",
     "Decision Making","Problem Solving"
-]
+@@ -63,29 +56,33 @@
 
-# -------------------------------
-# 🔍 Skill Extraction
-# -------------------------------
-def extract_skills(text):
-    text = text.lower()
-    text = re.sub(r"[^a-z0-9\s]+", " ", text)
     found = set()
     for skill in SKILLS:
+        if skill in text:
         if skill.lower() in text:
             found.add(skill)
+
     return found
 
-def extract_text_from_file(file_path):
-    if file_path.lower().endswith(".txt"):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
-    elif file_path.lower().endswith(".pdf") and PyPDF2:
+# -------------------------------
+# 📄 PDF/TXT Extraction
+# 📄 PDF/TXT Extraction (FIXED)
+# -------------------------------
+def extract_text_from_file(file):
+    if not file:
+        return ""
+
+    filename = file.filename.lower()
+
+    if filename.endswith(".txt"):
+        return file.read().decode("utf-8")
+    try:
+        if filename.endswith(".txt"):
+            return file.read().decode("utf-8")
+
+    elif filename.endswith(".pdf") and PyPDF2:
         text = ""
-        with open(file_path, "rb") as f:
-            reader = PyPDF2.PdfReader(f)
+        reader = PyPDF2.PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text() or ""
+        return text
+        elif filename.endswith(".pdf") and PyPDF2:
+            text = ""
+            reader = PyPDF2.PdfReader(file)
             for page in reader.pages:
                 text += page.extract_text() or ""
-        return text
+            return text
+
+    except Exception as e:
+        print("File read error:", e)
+
     return ""
 
-# -------------------------------
-# 🚀 Main Route
-# -------------------------------
-@app.route("/", methods=["GET", "POST"])
-def home():
-    matched, missing, extra = [], [], []
+@@ -99,15 +96,23 @@
     score = 0
     chances = "N/A"
 
+    # 🔥 ADD THESE (to keep values after submit)
     resume_text = ""
     jd_text = ""
 
     if request.method == "POST":
-        # Text input
+
         resume_text = request.form.get("resume", "")
         jd_text = request.form.get("jobdesc", "")
 
-        # File upload (optional)
+        # 🔥 Handle file upload (resume only)
+        # 🔥 FIX: file upload handling
         resume_file = request.files.get("resume_file")
-        jd_file = request.files.get("jd_file")
 
-        if resume_file and resume_file.filename:
-            path = os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(resume_file.filename))
-            resume_file.save(path)
-            resume_text += " " + extract_text_from_file(path)
+        if resume_file and resume_file.filename != "":
+            resume_text += " " + extract_text_from_file(resume_file)
+            extracted_text = extract_text_from_file(resume_file)
 
-        if jd_file and jd_file.filename:
-            path = os.path.join(app.config["UPLOAD_FOLDER"], secure_filename(jd_file.filename))
-            jd_file.save(path)
-            jd_text += " " + extract_text_from_file(path)
+            if extracted_text.strip():
+                resume_text = extracted_text  # replace textarea content
 
         # Extract skills
         resume_skills = extract_skills(resume_text)
-        jd_skills = extract_skills(jd_text)
-
-        matched = sorted(list(resume_skills & jd_skills))
-        missing = sorted(list(jd_skills - resume_skills))
-        extra = sorted(list(resume_skills - jd_skills))
-
-        if jd_skills:
-            score = int(len(matched) / len(jd_skills) * 100)
-            if score >= 80:
-                chances = "High"
-            elif score >= 50:
-                chances = "Medium"
-            else:
-                chances = "Low"
-
-    return render_template(
-        "index.html",
-        matched=matched,
         missing=missing,
         extra=extra,
         score=score,
+        chances=chances
         chances=chances,
-        resume_text=resume_text,
-        jd_text=jd_text
+        resume_text=resume_text,   # 🔥 IMPORTANT
+        jd_text=jd_text            # 🔥 IMPORTANT
     )
 
+
 if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=False)
     app.run(debug=True)
