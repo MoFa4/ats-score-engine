@@ -1,48 +1,58 @@
 import re
-import io
 from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
+import os
 
-# Optional PDF support
+# Optional PDF/TXT extraction
 try:
     import PyPDF2
 except ImportError:
     PyPDF2 = None
 
 app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = "uploads"
+
 
 # -------------------------------
-# 🔥 Skill List (unchanged)
+# 🔥 Master Skill Array (500+)
 # -------------------------------
 SKILLS = [
+    # --- IT & SOFTWARE DEVELOPMENT ---
     "Full Stack Development","JavaScript","Python","Java","C#","C++","TypeScript",
     "React.js","Angular","Vue.js","Node.js","Django","Flask","Spring Boot",
     "SQL","PostgreSQL","MongoDB","Redis","Docker","Kubernetes","AWS","Azure",
     "Google Cloud Platform (GCP)","Git/GitHub","CI/CD Pipelines","REST APIs", 
     "GraphQL","Microservices","Unit Testing","System Architecture","Agile/Scrum",
+    # --- AI & DATA ---
     "Machine Learning","Deep Learning","Natural Language Processing (NLP)",
     "Computer Vision","Reinforcement Learning","PyTorch","TensorFlow","Keras",
     "Scikit-learn","Pandas","NumPy","Data Visualization","Tableau","PowerBI",
     "R Programming","Predictive Analytics","Large Language Models (LLMs)",
     "Prompt Engineering","Data Engineering","Feature Engineering","A/B Testing",
     "Statistical Modeling","Hadoop","Spark",
+    # --- Hardware & Electronics ---
     "PCB Design","FPGA","Embedded Systems","VLSI","Circuit Analysis","Arduino",
     "Raspberry Pi","VHDL/Verilog","Microcontrollers","Robotics","MATLAB",
     "AutoCAD","SolidWorks","Signal Processing","Firmware Development",
     "PLC Programming","Hardware Troubleshooting","Mechatronics",
+    # --- Cybersecurity & Networking ---
     "Ethical Hacking","Penetration Testing","Network Security","Firewall Administration",
     "Identity & Access Management (IAM)","SIEM","Incident Response",
     "Vulnerability Assessment","Cloud Security","Cryptography","TCP/IP Networking",
     "Wireshark","Intrusion Detection Systems (IDS)","CompTIA Security+",
+    # --- Business & Ops ---
     "Project Management","Strategic Planning","SEO/SEM","Content Strategy",
     "Email Marketing","Social Media Management","Google Analytics","Salesforce",
     "Customer Relationship Management (CRM)","Financial Modeling","Budgeting",
     "Supply Chain Management","Logistics","Human Resources (HRIS)","Public Speaking",
     "Market Research","Change Management","Negotiation","Operations Analysis",
     "Six Sigma","Lean Manufacturing",
+    # --- Design ---
     "UI/UX Design","Figma","Adobe Photoshop","Adobe Illustrator","Adobe After Effects",
     "Wireframing","Prototyping","User Research","Interaction Design","Graphic Design",
     "Typography","Motion Graphics","Video Editing","Premiere Pro","Final Cut Pro",
     "3D Modeling","Blender","Maya","Unity 3D",
+    # --- Soft Skills ---
     "Team Leadership","Emotional Intelligence","Conflict Resolution","Critical Thinking",
     "Adaptability","Time Management","Intercultural Communication","Mentoring",
     "Decision Making","Problem Solving"
@@ -53,98 +63,61 @@ SKILLS = [
 # -------------------------------
 def extract_skills(text):
     text = text.lower()
-
-    # normalize text
     text = re.sub(r"[^a-z0-9\s]+", " ", text)
-    text = re.sub(r"\s+", " ", text)
-
     found = set()
-
     for skill in SKILLS:
-        skill_clean = skill.lower()
-
-        # 🔥 handle multi-word skills properly
-        if skill_clean in text:
+        if skill.lower() in text:
             found.add(skill)
-
     return found
 
-# -------------------------------
-# 📄 PDF/TXT Extraction (FIXED)
-# -------------------------------
-def extract_text_from_file(file):
-    if not file:
-        return ""
-
-    filename = file.filename.lower()
-
-    try:
-        if filename.endswith(".txt"):
-            return file.read().decode("utf-8")
-
-        elif filename.endswith(".pdf") and PyPDF2:
-            text = ""
-
-            # 🔥 FIX: convert to BytesIO
-            pdf_stream = io.BytesIO(file.read())
-            reader = PyPDF2.PdfReader(pdf_stream)
-
+def extract_text_from_file(file_path):
+    if file_path.lower().endswith(".txt"):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    elif file_path.lower().endswith(".pdf") and PyPDF2:
+        text = ""
+        with open(file_path, "rb") as f:
+            reader = PyPDF2.PdfReader(f)
             for page in reader.pages:
-                extracted = page.extract_text()
-                if extracted:
-                    text += extracted + " "
-
-            return text.strip()
-
-    except Exception as e:
-        print("PDF ERROR:", e)
-
+                text += page.extract_text() or ""
+        return text
     return ""
+
 # -------------------------------
 # 🚀 Main Route
 # -------------------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
-
+    # Initialize empty results by default
     matched, missing, extra = [], [], []
     score = 0
     chances = "N/A"
 
-    # 🔥 ADD THESE (to keep values after submit)
-    resume_text = ""
-    jd_text = ""
-
     if request.method == "POST":
-
         resume_text = request.form.get("resume", "")
         jd_text = request.form.get("jobdesc", "")
-
-        # 🔥 FIX: file upload handling
-        resume_file = request.files.get("resume_file")
-
-        if resume_file and resume_file.filename != "":
-            extracted_text = extract_text_from_file(resume_file)
-
-        if extracted_text:
-            resume_text = extracted_text   # 🔥 THIS is the key line  # replace textarea content
 
         # Extract skills
         resume_skills = extract_skills(resume_text)
         jd_skills = extract_skills(jd_text)
 
-        matched = sorted(resume_skills & jd_skills)
-        missing = sorted(jd_skills - resume_skills)
-        extra = sorted(resume_skills - jd_skills)
+        matched = sorted(list(resume_skills & jd_skills))
+        missing = sorted(list(jd_skills - resume_skills))
+        extra = sorted(list(resume_skills - jd_skills))
 
         if jd_skills:
-            score = int((len(matched) / len(jd_skills)) * 100)
-
+            score = int(len(matched) / len(jd_skills) * 100)
             if score >= 80:
                 chances = "High"
             elif score >= 50:
                 chances = "Medium"
             else:
                 chances = "Low"
+    else:
+        # GET request → reset everything
+        matched, missing, extra = [], [], []
+        score = 0
+        chances = "N/A"
 
     return render_template(
         "index.html",
@@ -152,11 +125,7 @@ def home():
         missing=missing,
         extra=extra,
         score=score,
-        chances=chances,
-        resume_text=resume_text,   # 🔥 IMPORTANT
-        jd_text=jd_text            # 🔥 IMPORTANT
+        chances=chances
     )
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=10000)
