@@ -1,44 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Anime ATS Score Engine</title>
     <title>ATS Score Engine</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="container">
-    <h1>📝 ATS Score Engine</h1>
-    <p>Paste your Resume & Job Description or upload PDF/TXT files to get a score and skills analysis.</p>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label>Resume (Text)</label>
-        <textarea name="resume" placeholder="Paste your resume here...">{{ resume_text }}</textarea>
-        <label>OR Upload Resume File</label>
-        <input type="file" name="resume_file" accept=".txt,.pdf">
+    <div class="container">
+        <h1>🚀 Anime ATS Score Engine</h1>
+        <h1>🚀 ATS Score Engine</h1>
 
-        <label>Job Description (Text)</label>
-        <textarea name="jobdesc" placeholder="Paste the job description here...">{{ jd_text }}</textarea>
-        <label>OR Upload JD File</label>
-        <input type="file" name="jd_file" accept=".txt,.pdf">
+        <!-- 🔽 Resume PDF Upload -->
+        <form method="POST" enctype="multipart/form-data">
+            <label style="font-weight:bold;">Upload Resume (PDF/TXT):</label><br>
+            <input type="file" name="resume_pdf"><br><br>
 
-        <button type="submit">Analyze</button>
-    </form>
+            <label>Paste Resume Text:</label><br>
+            <textarea name="resume" rows="7" placeholder="Paste your resume here..."></textarea><br><br>
+            <textarea name="resume">{{ resume_text }}</textarea><br>
 
-    {% if score != 0 %}
-    <div class="results">
-        <h2>📊 Results</h2>
-        <p><b>Score:</b> {{ score }}%</p>
-        <p><b>Shortlisting Chances:</b> {{ chances }}</p>
+            <label>Paste Job Description:</label><br>
+            <textarea name="jobdesc" rows="7" placeholder="Paste job description here..."></textarea><br><br>
+            <textarea name="jobdesc">{{ jd_text }}</textarea><br>
 
-        <h3>Matched Skills</h3>
-        <p>{{ matched|join(", ") }}</p>
+            <button type="submit">Calculate</button>
+        </form>
 
-        <h3>Missing Skills</h3>
-        <p>{{ missing|join(", ") }}</p>
+        <div class="input-section">
+            <label>Resume</label>
+            <textarea name="resume"></textarea>
 
-        <h3>Extra Skills</h3>
-        <p>{{ extra|join(", ") }}</p>
+            <input type="file" name="resume_file">
+        </div>
+
+        <!-- -------------------------- -->
+        <!-- 🔥 Results Section (Always Visible) -->
+        <!-- -------------------------- -->
+ <h2>ATS Analysis</h2>
+
     </div>
-    {% endif %}
-</div>
 </body>
+</html>
 </html>
