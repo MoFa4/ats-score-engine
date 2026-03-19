@@ -109,44 +109,36 @@ def extract_text_from_file(file_storage):
 # -------------------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
+    # Initialize empty results by default
     matched, missing, extra = [], [], []
     score = 0
     chances = "N/A"
 
-    resume_text = ""
-    jd_text = ""
-
     if request.method == "POST":
-        # 1. Always get current textarea values first
-        resume_text = request.form.get("resume", "").strip()
-        jd_text = request.form.get("jobdesc", "").strip()
+        resume_text = request.form.get("resume", "")
+        jd_text = request.form.get("jobdesc", "")
 
-        # 2. If user uploaded a file → extract and **override** resume_text
-        resume_file = request.files.get("resume_file")
-        if resume_file and resume_file.filename != "":
-            print(f"[DEBUG] File received: {resume_file.filename}")
-            extracted = extract_text_from_file(resume_file)
-            print(f"[DEBUG] Extracted {len(extracted)} characters")
-            if extracted.strip():
-                resume_text = extracted.strip()  # ← this is the magic line – must be here
-                print("[DEBUG] Resume text updated from file")
-
-        # 3. Now extract skills from whatever resume_text ended up being
+        # Extract skills
         resume_skills = extract_skills(resume_text)
         jd_skills = extract_skills(jd_text)
 
-        matched = sorted(resume_skills & jd_skills)
-        missing = sorted(jd_skills - resume_skills)
-        extra = sorted(resume_skills - jd_skills)
+        matched = sorted(list(resume_skills & jd_skills))
+        missing = sorted(list(jd_skills - resume_skills))
+        extra = sorted(list(resume_skills - jd_skills))
 
         if jd_skills:
-            score = int((len(matched) / len(jd_skills)) * 100)
+            score = int(len(matched) / len(jd_skills) * 100)
             if score >= 80:
                 chances = "High"
             elif score >= 50:
                 chances = "Medium"
             else:
                 chances = "Low"
+    else:
+        # GET request → reset everything
+        matched, missing, extra = [], [], []
+        score = 0
+        chances = "N/A"
 
     return render_template(
         "index.html",
@@ -154,11 +146,8 @@ def home():
         missing=missing,
         extra=extra,
         score=score,
-        chances=chances,
-        resume_text=resume_text,
-        jd_text=jd_text
+        chances=chances
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)
