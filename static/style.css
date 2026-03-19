@@ -231,15 +231,16 @@ button {
 
 /* 🐧 Animated Logo */
 .logo-anim {
-    width: 55px;
-    height: 55px;
+    position: absolute;
+    top: 20px;        /* move to top */
+    left: 20px;
+
+    width: 40px;      /* smaller size */
+    height: 40px;
     object-fit: contain;
 
-    background: white;
-    padding: 6px;
-    border-radius: 12px;
+    opacity: 0.9;     /* subtle branding look */
 
-    /* ✨ animation */
     animation: floatLogo 3s ease-in-out infinite;
 }
 
@@ -271,4 +272,9 @@ button {
         width: 45px;
         height: 45px;
     }
+}
+
+
+.container {
+    position: relative;
 }
