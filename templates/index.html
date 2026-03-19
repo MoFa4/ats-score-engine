@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Anime ATS Score Engine</title>
+    <title>ATS Score Engine</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
     <div class="container">
-        <h1>🚀 Anime ATS Score Engine</h1>
+        <h1>🚀 ATS Score Engine</h1>
 
         <!-- 🔽 Resume PDF Upload -->
         <form method="POST" enctype="multipart/form-data">
@@ -15,13 +16,20 @@
             <input type="file" name="resume_pdf"><br><br>
 
             <label>Paste Resume Text:</label><br>
-            <textarea name="resume" rows="7" placeholder="Paste your resume here..."></textarea><br><br>
+            <textarea name="resume">{{ resume_text }}</textarea><br>
 
             <label>Paste Job Description:</label><br>
-            <textarea name="jobdesc" rows="7" placeholder="Paste job description here..."></textarea><br><br>
+            <textarea name="jobdesc">{{ jd_text }}</textarea><br>
 
             <button type="submit">Calculate</button>
         </form>
+
+        <div class="input-section">
+            <label>Resume</label>
+            <textarea name="resume"></textarea>
+
+            <input type="file" name="resume_file">
+        </div>
 
         <!-- -------------------------- -->
         <!-- 🔥 Results Section (Always Visible) -->
