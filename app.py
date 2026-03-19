@@ -109,9 +109,7 @@ def extract_text_from_file(file_storage):
 # -------------------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
-    matched = []
-    missing = []
-    extra = []
+    matched, missing, extra = [], [], []
     score = 0
     chances = "N/A"
 
@@ -119,24 +117,27 @@ def home():
     jd_text = ""
 
     if request.method == "POST":
-        # 1. Get textarea values (may be overwritten by file)
+        # 1. Always get current textarea values first
         resume_text = request.form.get("resume", "").strip()
-        jd_text    = request.form.get("jobdesc", "").strip()
+        jd_text = request.form.get("jobdesc", "").strip()
 
-        # 2. Handle resume file upload → extract & override resume_text
+        # 2. If user uploaded a file → extract and **override** resume_text
         resume_file = request.files.get("resume_file")
-        if resume_file and resume_file.filename:
+        if resume_file and resume_file.filename != "":
+            print(f"[DEBUG] File received: {resume_file.filename}")
             extracted = extract_text_from_file(resume_file)
+            print(f"[DEBUG] Extracted {len(extracted)} characters")
             if extracted.strip():
-                resume_text = extracted.strip()   # ← this is the key: show extracted text in textarea
+                resume_text = extracted.strip()  # ← this is the magic line – must be here
+                print("[DEBUG] Resume text updated from file")
 
-        # 3. Always compare what's now in the textareas
+        # 3. Now extract skills from whatever resume_text ended up being
         resume_skills = extract_skills(resume_text)
-        jd_skills     = extract_skills(jd_text)
+        jd_skills = extract_skills(jd_text)
 
         matched = sorted(resume_skills & jd_skills)
         missing = sorted(jd_skills - resume_skills)
-        extra   = sorted(resume_skills - jd_skills)
+        extra = sorted(resume_skills - jd_skills)
 
         if jd_skills:
             score = int((len(matched) / len(jd_skills)) * 100)
@@ -154,7 +155,7 @@ def home():
         extra=extra,
         score=score,
         chances=chances,
-        resume_text=resume_text,   # preserved / filled from PDF
+        resume_text=resume_text,
         jd_text=jd_text
     )
 
