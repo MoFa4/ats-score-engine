@@ -79,7 +79,7 @@ def extract_text_from_file(file):
 
     try:
         if filename.endswith(".txt"):
-            return file.read().decode("utf-8")
+            text = file.read().decode("utf-8")
 
         elif filename.endswith(".pdf") and PyPDF2:
             text = ""
@@ -88,13 +88,32 @@ def extract_text_from_file(file):
             for page in reader.pages:
                 extracted = page.extract_text()
                 if extracted:
-                    text += extracted + " "
+                    text += extracted + "\n"
 
-            # 🔥 CLEAN TEXT (IMPORTANT)
-            text = re.sub(r"\s+", " ", text)   # remove extra spaces
-            text = text.lower()
+        else:
+            return ""
 
-            return text
+        text = text.lower()
+
+        # 🔥 STEP 1: Try to extract SKILLS section
+        skills_section = ""
+
+        patterns = [
+            r"skills(.*?)(education|experience|projects|certifications|$)",
+            r"technical skills(.*?)(education|experience|projects|$)",
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, text, re.DOTALL)
+            if match:
+                skills_section = match.group(1)
+                break
+
+        # 🔥 STEP 2: fallback → full text
+        if skills_section.strip():
+            return skills_section.strip()
+
+        return text
 
     except Exception as e:
         print("PDF error:", e)
