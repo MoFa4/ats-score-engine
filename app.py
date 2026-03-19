@@ -97,7 +97,6 @@ def extract_text_from_file(file):
 
     return ""
 
-@@ -99,15 +96,23 @@
     score = 0
     chances = "N/A"
 
