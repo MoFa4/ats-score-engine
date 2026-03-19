@@ -1,4 +1,5 @@
 import re
+import io
 from flask import Flask, render_template, request
 
 # Optional PDF support
@@ -78,26 +79,25 @@ def extract_text_from_file(file):
     filename = file.filename.lower()
 
     try:
-        # TXT file
         if filename.endswith(".txt"):
             return file.read().decode("utf-8")
 
-        # PDF file
         elif filename.endswith(".pdf") and PyPDF2:
             text = ""
-            reader = PyPDF2.PdfReader(file)
+
+            # 🔥 FIX: convert to BytesIO
+            pdf_stream = io.BytesIO(file.read())
+            reader = PyPDF2.PdfReader(pdf_stream)
 
             for page in reader.pages:
                 extracted = page.extract_text()
                 if extracted:
                     text += extracted + " "
 
-            # 🔥 clean text properly
-            text = re.sub(r"\s+", " ", text)
             return text.strip()
 
     except Exception as e:
-        print("PDF error:", e)
+        print("PDF ERROR:", e)
 
     return ""
 # -------------------------------
