@@ -1,35 +1,119 @@
+/* 🔥 Base */
 body {
-    font-family: Arial;
-    background: linear-gradient(135deg, #1e1e2f, #3a0ca3);
-    color: white;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: #e2e8f0;
 }
 
+/* 🌌 Subtle grid pattern */
+body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+}
+
+/* 📦 Container */
 .container {
     max-width: 900px;
     margin: auto;
     padding: 20px;
 }
 
+/* 🧠 Heading */
+h1 {
+    text-align: center;
+    font-size: 32px;
+    background: linear-gradient(90deg, #38bdf8, #a78bfa);
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 25px;
+}
+
+/* ✏️ Inputs */
 textarea {
     width: 100%;
     min-height: 180px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    padding: 12px;
+    background: #020617;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    font-size: 14px;
+    transition: 0.3s;
 }
 
+textarea:focus {
+    outline: none;
+    border: 1px solid #38bdf8;
+    box-shadow: 0 0 10px rgba(56,189,248,0.3);
+}
+
+/* 📂 File input */
+input[type="file"] {
+    margin-bottom: 15px;
+    color: #94a3b8;
+}
+
+/* 🚀 Button */
 button {
     width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    background: #ff4d6d;
+    padding: 12px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #38bdf8, #6366f1);
     color: white;
     border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(99,102,241,0.5);
+}
+
+/* 📊 Results Box */
 .result-box {
-    margin-top: 20px;
-    background: rgba(255,255,255,0.1);
-    padding: 15px;
-    border-radius: 10px;
+    margin-top: 25px;
+    background: rgba(15, 23, 42, 0.8);
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    backdrop-filter: blur(10px);
+}
+
+/* 📌 Section Titles */
+.result-box h3 {
+    color: #38bdf8;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+/* 📄 Text */
+.result-box p {
+    color: #cbd5f5;
+    word-wrap: break-word;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    textarea {
+        min-height: 150px;
+        font-size: 13px;
+    }
+
+    button {
+        font-size: 14px;
+    }
 }
