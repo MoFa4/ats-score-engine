@@ -232,16 +232,14 @@ button {
 /* 🐧 Animated Logo */
 .logo-anim {
     position: absolute;
-    top: 20px;        /* move to top */
-    left: 20px;
+    top: 25px;
+    left: 0;
 
-    width: 40px;      /* smaller size */
-    height: 40px;
+    width: 40px;
+    height: 100px;
     object-fit: contain;
 
-    opacity: 0.9;     /* subtle branding look */
-
-    animation: floatLogo 3s ease-in-out infinite;
+    animation: penguinRun 6s ease-in-out infinite;
 }
 
 /* 🎬 Floating animation */
@@ -271,6 +269,44 @@ button {
     .logo-anim {
         width: 45px;
         height: 45px;
+    }
+}
+
+@keyframes penguinRun {
+
+    /* start left */
+    0% {
+        left: 0;
+        top:40px;
+        transform: rotate(0deg);
+    }
+
+    /* jump up (over title start) */
+    25% {
+        left: 20%;
+        top: -20px;
+        transform: rotate(-10deg);
+    }
+
+    /* peak jump */
+    50% {
+        left: 80%;
+        top: -20px;
+        transform: rotate(10deg);
+    }
+
+    /* land after title */
+    75% {
+        left: 90%;
+        top: 25px;
+        transform: rotate(0deg);
+    }
+
+    /* go back reverse */
+    100% {
+        left: 0;
+        top: 25px;
+        transform: rotate(0deg);
     }
 }
 
