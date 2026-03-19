@@ -1,219 +1,35 @@
-/* -------------------------------------------- */
-/* Anime-Themed ATS Engine with Gradient & Mascot */
-/* -------------------------------------------- */
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-/* Colors & Palettes */
-:root {
-    --bg-dark: #1a0f3c;
-    --bg-gradient-1: #36096d;
-    --bg-gradient-2: #4b82f7;
-    --bg-gradient-3: #ff5ec0;
-    --bg-gradient-4: #ee82ee;
-    --card-bg: rgba(25, 12, 54, 0.85);
-    --text-light: #f1f1f9;
-    --accent-pink: #ff5ec0;
-    --accent-blue: #4b82f7;
-    --accent-purple: #a64ce0;
-    --highlight: #ffb3ff;
-}
-
-/* -------------------- */
-/* Animated Background Gradient */
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    color: var(--text-light);
-    background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3), var(--bg-gradient-4));
-    background-size: 800% 800%;
-    animation: gradientAnim 20s ease infinite;
-    min-height: 100vh;
-}
-
-@keyframes gradientAnim {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-}
-
-/* -------------------- */
-/* Container / Card */
-.container {
-    max-width: 920px;
-    margin: 50px auto;
-    padding: 25px;
-    background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(8px);
-    position: relative;
-}
-
-/* -------------------- */
-/* Header with Mascot */
-h1 {
-    font-family: 'Press Start 2P', cursive;
-    text-align: center;
-    font-size: 2.2rem;
-    color: var(--accent-pink);
-    text-shadow: 0 0 8px var(--accent-pink), 0 0 12px var(--accent-blue);
-    position: relative;
-    z-index: 1;
-}
-
-h1::after {
-    content: url('https://i.imgur.com/K7tH7Lm.png'); /* small anime mascot placeholder */
-    position: absolute;
-    right: -60px;
-    top: -20px;
-    width: 50px;
-    opacity: 0.5;
-    z-index: 0;
-    transform: rotate(-15deg);
-}
-
-/* -------------------- */
-/* Form Styles */
-textarea, input[type="file"] {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 14px;
-    border-radius: 10px;
-    border: 2px solid var(--accent-purple);
-    background: #2f1b64;
-    color: var(--text-light);
-    font-size: 14px;
-    resize: vertical;
-    transition: 0.3s ease;
-}
-textarea:focus {
-    border-color: var(--accent-pink);
-    box-shadow: 0 0 10px var(--accent-pink);
-}
-
-button {
-    margin-top: 18px;
-    padding: 14px 26px;
-    font-size: 16px;
-    font-weight: bold;
-    background: var(--accent-blue);
-    border: none;
-    border-radius: 8px;
+    font-family: Arial;
+    background: linear-gradient(135deg, #1e1e2f, #3a0ca3);
     color: white;
-    cursor: pointer;
-    box-shadow: 0 0 6px var(--accent-pink), 0 0 12px var(--accent-blue);
-    transition: 0.2s ease-in-out;
-}
-button:hover {
-    background: var(--accent-pink);
-    box-shadow: 0 0 10px var(--accent-pink), 0 0 18px var(--accent-purple);
 }
 
-/* -------------------- */
-/* Result Cards */
-.results {
-    margin-top: 28px;
-    padding: 20px;
-    background: var(--card-bg);
-    border-left: 6px solid var(--accent-pink);
-    border-radius: 10px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
-    transition: transform 0.3s ease;
-}
-.results:hover {
-    transform: translateY(-5px) scale(1.02);
-}
-
-.results h2 {
-    color: var(--accent-blue);
-    font-size: 1.8rem;
-    text-shadow: 0 0 6px var(--accent-blue);
-}
-.results h3 {
-    color: var(--accent-pink);
-}
-
-/* -------------------- */
-/* Skill Tags */
-.matched, .missing, .extra {
-    padding: 5px 9px;
-    border-radius: 6px;
-    margin: 3px;
-    display: inline-block;
-    font-weight: 600;
-}
-.matched {
-    background: var(--accent-blue);
-    box-shadow: 0 0 6px var(--accent-blue);
-    color: #fff;
-}
-.missing {
-    background: var(--accent-pink);
-    box-shadow: 0 0 6px var(--highlight);
-    color: #fff;
-}
-.extra {
-    background: var(--accent-purple);
-    box-shadow: 0 0 6px var(--accent-purple);
-    color: #fff;
-}
-
-/* -------------------- */
-/* Animated Cursor */
-body {
-    cursor: url('https://i.imgur.com/lr2Hq7O.png'), auto; /* tiny anime star / pointer */
-}
-
-/* 🔥 Container Fix */
 .container {
     max-width: 900px;
     margin: auto;
-    padding: 15px;
+    padding: 20px;
 }
 
-/* 🧾 Textareas (resume + JD) */
 textarea {
     width: 100%;
-    min-height: 180px; /* ~7 lines */
+    min-height: 180px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+button {
+    width: 100%;
     padding: 10px;
     border-radius: 10px;
-    box-sizing: border-box;
-    resize: vertical;
+    background: #ff4d6d;
+    color: white;
+    border: none;
 }
 
-/* 📱 Mobile Fix */
-@media (max-width: 768px) {
-
-    h1 {
-        font-size: 24px;
-        text-align: center;
-    }
-
-    textarea {
-        min-height: 160px;
-        font-size: 14px;
-    }
-
-    input, button {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .result-box {
-        padding: 10px;
-        font-size: 14px;
-    }
-}
-
-/* 🧩 Prevent overflow issues */
-* {
-    box-sizing: border-box;
-}
-
-/* 📦 Fix for upload + boxes alignment */
-form {
-    width: 100%;
+.result-box {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
 }
