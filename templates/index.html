@@ -9,17 +9,16 @@
 <body>
 
 <div class="container">
-    <div class="top-bar">
-    <img src="{{ url_for('static', filename='pengu1.png') }}" class="logo">
+    <div class="title-row">
+    <img src="{{ url_for('static', filename='pengu1.png') }}" class="logo-anim">
+    <h1 class="title">ATS Score Engine</h1>
 </div>
-
-<h1 class="title">ATS Score Engine</h1>
    <form method="POST" enctype="multipart/form-data">
 
     <!-- Resume Section -->
     <div class="input-section">
         <div class="section-header">
-            <label>Resume</label>
+            <label>RESUME</label>
             <input type="file" name="resume_file">
         </div>
         <textarea name="resume">{{ resume_text }}</textarea>
@@ -28,7 +27,7 @@
     <!-- Job Description Section -->
     <div class="input-section">
         <div class="section-header">
-            <label>Job Description</label>
+            <label>JOB DESCRIPTION</label>
         </div>
         <textarea name="jobdesc">{{ jd_text }}</textarea>
     </div>
@@ -37,19 +36,19 @@
 </form>
 
     <div class="result-box">
-        <h3>Predicted Score</h3>
+        <h3>PREDICTED SCORE</h3>
         <p>{{ score }}</p>
 
-        <h3>Chances of Shortlist</h3>
+        <h3>PROBABILITY OF SHORTLIST</h3>
         <p>{{ chances }}</p>
 
-        <h3>Matched Skills</h3>
+        <h3>MATCHED SKILLS</h3>
         <p>{{ matched }}</p>
 
-        <h3>Missing Skills</h3>
+        <h3>MISSING SKILLS</h3>
         <p>{{ missing }}</p>
 
-        <h3>Extra Skills</h3>
+        <h3>ADDITIONAL SKILLS</h3>
         <p>{{ extra }}</p>
     </div>
 
