@@ -1,184 +1,100 @@
-/* 🔥 Base */
-body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    background: radial-gradient(circle at top, #0f172a, #020617);
-    color: #e2e8f0;
-}
-
-/* 🌌 Subtle grid pattern */
-body::before {
-    content: "";
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: -1;
-}
-
-/* 📦 Container */
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* 🧠 Heading */
-h1 {
-    text-align: center;
-    font-size: 32px;
-    background: linear-gradient(90deg, #38bdf8, #a78bfa);
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 25px;
-}
-
-/* ✏️ Inputs */
-textarea {
-    width: 100%;
-    min-height: 180px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    padding: 12px;
-    background: #020617;
-    border: 1px solid #334155;
-    color: #e2e8f0;
-    font-size: 14px;
-    transition: 0.3s;
-}
-
-textarea:focus {
-    outline: none;
-    border: 1px solid #38bdf8;
-    box-shadow: 0 0 10px rgba(56,189,248,0.3);
-}
-
-/* 📂 File input */
-input[type="file"] {
-    margin-bottom: 15px;
-    color: #94a3b8;
-}
-
-/* 🚀 Button */
-button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #38bdf8, #6366f1);
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(99,102,241,0.5);
-}
-
-/* 📊 Results Box */
-.result-box {
-    margin-top: 25px;
-    background: rgba(15, 23, 42, 0.8);
-    padding: 18px;
-    border-radius: 14px;
-    border: 1px solid #334155;
-    backdrop-filter: blur(10px);
-}
-
-/* 📌 Section Titles */
-.result-box h3 {
-    color: #38bdf8;
-    margin-top: 15px;
-    margin-bottom: 5px;
-}
-
-/* 📄 Text */
-.result-box p {
-    color: #cbd5f5;
-    word-wrap: break-word;
-}
-
-/* 📱 Responsive */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 24px;
-    }
-
-    textarea {
-        min-height: 150px;
-        font-size: 13px;
-    }
-
-    button {
-        font-size: 14px;
-    }
-}
-
-/* 🔹 Input Sections */
-.input-section {
-    margin-bottom: 25px;
-}
-
-/* 🔹 Header (label + file upload alignment) */
-.section-header {
+/* 🔥 BRAND HEADER */
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
-/* 🔹 Labels */
-label {
-    font-size: 15px;
-    font-weight: 500;
-    color: #94a3b8;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* 🔹 File Input Styling */
-input[type="file"] {
-    font-size: 12px;
-    background: #020617;
-    border: 1px solid #334155;
-    padding: 6px;
-    border-radius: 8px;
-    color: #cbd5f5;
-    cursor: pointer;
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
 }
 
-input[type="file"]::file-selector-button {
-    background: linear-gradient(90deg, #38bdf8, #6366f1);
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    margin-right: 8px;
-    border-radius: 6px;
-    cursor: pointer;
+.brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #e2e8f0;
 }
 
-/* 🔹 Improve textarea spacing */
-textarea {
-    margin-top: 5px;
-}
-
-/* 🔹 Button spacing improvement */
-button {
+/* 🔥 MAIN TITLE (COOL + ANIMATED) */
+.main-title {
+    text-align: center;
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #38bdf8, #6366f1, #ec4899);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: glowMove 5s linear infinite;
     margin-top: 10px;
 }
 
-/* 📱 Mobile stacking */
-@media (max-width: 768px) {
+/* ✨ Subtitle */
+.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+}
 
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+/* 🎬 Gradient animation */
+@keyframes glowMove {
+    0% { background-position: 0%; }
+    100% { background-position: 300%; }
+}
+
+/* 🔮 Glass card upgrade */
+.container {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 0 40px rgba(56,189,248,0.08);
+}
+
+/* ✨ Input hover effect */
+.input-section {
+    transition: 0.25s;
+}
+
+.input-section:hover {
+    transform: translateY(-2px);
+}
+
+/* 💎 Button upgrade */
+button {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* 📊 Result polish */
+.result-box {
+    margin-top: 25px;
+    background: rgba(2, 6, 23, 0.9);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #1e293b;
+}
+
+/* 📱 Mobile polish */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 26px;
     }
 
-    input[type="file"] {
-        width: 100%;
+    .brand-name {
+        font-size: 15px;
     }
 }
