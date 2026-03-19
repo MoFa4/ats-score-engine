@@ -191,9 +191,18 @@ button {
 }
 
 .logo {
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
+    width: 65px;          /* bigger */
+    height: 65px;
+    object-fit: contain;  /* keeps proportions clean */
+    
+    background: white;    /* makes logo pop (important for dark UI) */
+    padding: 6px;         /* space around logo */
+    border-radius: 12px;
+
+    box-shadow: 0 0 15px rgba(255,255,255,0.15); /* subtle glow */
+}
+.logo {
+    image-rendering: crisp-edges;
 }
 
 /* 🔥 Animated Title */
