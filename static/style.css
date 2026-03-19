@@ -219,3 +219,56 @@ button {
     0% { background-position: 0%; }
     100% { background-position: 300%; }
 }
+
+/* 🔥 Title Row */
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* 🐧 Animated Logo */
+.logo-anim {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+
+    background: white;
+    padding: 6px;
+    border-radius: 12px;
+
+    /* ✨ animation */
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+/* 🎬 Floating animation */
+@keyframes floatLogo {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+
+/* 🔥 Title (keep your gradient) */
+.title {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #6366f1, #ec4899);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: moveGradient 4s linear infinite;
+}
+
+/* 📱 Mobile fix */
+@media (max-width: 768px) {
+    .title {
+        font-size: 24px;
+    }
+
+    .logo-anim {
+        width: 45px;
+        height: 45px;
+    }
+}
