@@ -52,11 +52,18 @@ SKILLS = [
 # -------------------------------
 def extract_skills(text):
     text = text.lower()
+
+    # normalize text
     text = re.sub(r"[^a-z0-9\s]+", " ", text)
+    text = re.sub(r"\s+", " ", text)
 
     found = set()
+
     for skill in SKILLS:
-        if skill.lower() in text:
+        skill_clean = skill.lower()
+
+        # 🔥 handle multi-word skills properly
+        if skill_clean in text:
             found.add(skill)
 
     return found
@@ -77,12 +84,20 @@ def extract_text_from_file(file):
         elif filename.endswith(".pdf") and PyPDF2:
             text = ""
             reader = PyPDF2.PdfReader(file)
+
             for page in reader.pages:
-                text += page.extract_text() or ""
+                extracted = page.extract_text()
+                if extracted:
+                    text += extracted + " "
+
+            # 🔥 CLEAN TEXT (IMPORTANT)
+            text = re.sub(r"\s+", " ", text)   # remove extra spaces
+            text = text.lower()
+
             return text
 
     except Exception as e:
-        print("File read error:", e)
+        print("PDF error:", e)
 
     return ""
 
