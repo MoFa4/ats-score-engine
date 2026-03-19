@@ -161,5 +161,4 @@ def home():
 
 
 if __name__ == "__main__":
-    # For local dev only – Vercel ignores this
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
