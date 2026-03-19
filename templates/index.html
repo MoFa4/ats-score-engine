@@ -12,17 +12,27 @@
 
     <h1>ATS Score Engine</h1>
 
-    <form method="POST" enctype="multipart/form-data">
+   <form method="POST" enctype="multipart/form-data">
 
-        <label>Resume</label>
+    <!-- Resume Section -->
+    <div class="input-section">
+        <div class="section-header">
+            <label>Resume</label>
+            <input type="file" name="resume_file">
+        </div>
         <textarea name="resume">{{ resume_text }}</textarea>
-        <input type="file" name="resume_file">
+    </div>
 
-        <label>Job Description</label>
+    <!-- Job Description Section -->
+    <div class="input-section">
+        <div class="section-header">
+            <label>Job Description</label>
+        </div>
         <textarea name="jobdesc">{{ jd_text }}</textarea>
+    </div>
 
-        <button type="submit">Calculate</button>
-    </form>
+    <button type="submit">Calculate</button>
+</form>
 
     <div class="result-box">
         <h3>Predicted Score</h3>
