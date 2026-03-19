@@ -1,124 +1,164 @@
 import re
 from flask import Flask, render_template, request
-from werkzeug.utils import secure_filename
-import os
 
-# Optional PDF/TXT extraction
 # Optional PDF support
 try:
-    import PyPDF2
+    from pypdf import PdfReader  # ← modern successor (pypdf), more reliable than PyPDF2
 except ImportError:
-    PyPDF2 = None
+    try:
+        import PyPDF2
+    except ImportError:
+        PyPDF2 = None
+        PdfReader = None
 
 app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = "uploads"
-
 
 # -------------------------------
-# 🔥 Master Skill Array (500+)
-# 🔥 Skill List
+# 🔥 Skill List (unchanged)
 # -------------------------------
 SKILLS = [
-    # --- IT & SOFTWARE DEVELOPMENT ---
-@@ -64,60 +60,72 @@
+    "Full Stack Development", "JavaScript", "Python", "Java", "C#", "C++", "TypeScript",
+    "React.js", "Angular", "Vue.js", "Node.js", "Django", "Flask", "Spring Boot",
+    "SQL", "PostgreSQL", "MongoDB", "Redis", "Docker", "Kubernetes", "AWS", "Azure",
+    "Google Cloud Platform (GCP)", "Git/GitHub", "CI/CD Pipelines", "REST APIs",
+    "GraphQL", "Microservices", "Unit Testing", "System Architecture", "Agile/Scrum",
+    "Machine Learning", "Deep Learning", "Natural Language Processing (NLP)",
+    "Computer Vision", "Reinforcement Learning", "PyTorch", "TensorFlow", "Keras",
+    "Scikit-learn", "Pandas", "NumPy", "Data Visualization", "Tableau", "PowerBI",
+    "R Programming", "Predictive Analytics", "Large Language Models (LLMs)",
+    "Prompt Engineering", "Data Engineering", "Feature Engineering", "A/B Testing",
+    "Statistical Modeling", "Hadoop", "Spark",
+    "PCB Design", "FPGA", "Embedded Systems", "VLSI", "Circuit Analysis", "Arduino",
+    "Raspberry Pi", "VHDL/Verilog", "Microcontrollers", "Robotics", "MATLAB",
+    "AutoCAD", "SolidWorks", "Signal Processing", "Firmware Development",
+    "PLC Programming", "Hardware Troubleshooting", "Mechatronics",
+    "Ethical Hacking", "Penetration Testing", "Network Security", "Firewall Administration",
+    "Identity & Access Management (IAM)", "SIEM", "Incident Response",
+    "Vulnerability Assessment", "Cloud Security", "Cryptography", "TCP/IP Networking",
+    "Wireshark", "Intrusion Detection Systems (IDS)", "CompTIA Security+",
+    "Project Management", "Strategic Planning", "SEO/SEM", "Content Strategy",
+    "Email Marketing", "Social Media Management", "Google Analytics", "Salesforce",
+    "Customer Relationship Management (CRM)", "Financial Modeling", "Budgeting",
+    "Supply Chain Management", "Logistics", "Human Resources (HRIS)", "Public Speaking",
+    "Market Research", "Change Management", "Negotiation", "Operations Analysis",
+    "Six Sigma", "Lean Manufacturing",
+    "UI/UX Design", "Figma", "Adobe Photoshop", "Adobe Illustrator", "Adobe After Effects",
+    "Wireframing", "Prototyping", "User Research", "Interaction Design", "Graphic Design",
+    "Typography", "Motion Graphics", "Video Editing", "Premiere Pro", "Final Cut Pro",
+    "3D Modeling", "Blender", "Maya", "Unity 3D",
+    "Team Leadership", "Emotional Intelligence", "Conflict Resolution", "Critical Thinking",
+    "Adaptability", "Time Management", "Intercultural Communication", "Mentoring",
+    "Decision Making", "Problem Solving"
+]
+
+# -------------------------------
+# 🔍 Skill Extraction (case-insensitive, better matching)
+# -------------------------------
 def extract_skills(text):
+    if not text:
+        return set()
     text = text.lower()
-    text = re.sub(r"[^a-z0-9\s]+", " ", text)
+    text = re.sub(r"[^a-z0-9\s\+\.#]+", " ", text)  # keep +, ., # (C#, .NET, etc.)
+    text = re.sub(r"\s+", " ", text).strip()
 
     found = set()
     for skill in SKILLS:
-        if skill.lower() in text:
-        if skill in text:
+        # More flexible: allow minor variations (react js → React.js)
+        pattern = r"\b" + re.escape(skill.lower().replace(".", r"\.").replace("+", r"\+")) + r"\b"
+        if re.search(pattern, text, re.IGNORECASE):
             found.add(skill)
-
     return found
 
-def extract_text_from_file(file_path):
-    if file_path.lower().endswith(".txt"):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
-    elif file_path.lower().endswith(".pdf") and PyPDF2:
+
 # -------------------------------
-# 📄 PDF/TXT Extraction
+# 📄 Text extraction from file (PDF or TXT) – in-memory only
 # -------------------------------
-def extract_text_from_file(file):
-    if not file:
+def extract_text_from_file(file_storage):
+    if not file_storage or not file_storage.filename:
         return ""
 
-    filename = file.filename.lower()
+    filename = file_storage.filename.lower().strip()
 
-    if filename.endswith(".txt"):
-        return file.read().decode("utf-8")
+    try:
+        content = file_storage.read()           # read bytes once
+        file_storage.seek(0)                    # reset for safety (though not needed here)
 
-    elif filename.endswith(".pdf") and PyPDF2:
-        text = ""
-        with open(file_path, "rb") as f:
-            reader = PyPDF2.PdfReader(f)
-            for page in reader.pages:
-                text += page.extract_text() or ""
-        reader = PyPDF2.PdfReader(file)
-        for page in reader.pages:
-            text += page.extract_text() or ""
-        return text
+        if filename.endswith(".txt"):
+            try:
+                return content.decode("utf-8")
+            except UnicodeDecodeError:
+                return content.decode("latin-1", errors="replace")
+
+        elif filename.endswith(".pdf"):
+            if PdfReader:
+                reader = PdfReader(file_storage)
+                return "\n".join(page.extract_text() or "" for page in reader.pages)
+            elif PyPDF2:
+                reader = PyPDF2.PdfReader(file_storage)
+                return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+    except Exception as e:
+        print(f"File extraction error ({filename}): {e}")
+        return ""
 
     return ""
+
 
 # -------------------------------
 # 🚀 Main Route
 # -------------------------------
 @app.route("/", methods=["GET", "POST"])
 def home():
-    # Initialize empty results by default
-
-    matched, missing, extra = [], [], []
+    matched = []
+    missing = []
+    extra = []
     score = 0
     chances = "N/A"
 
+    resume_text = ""
+    jd_text = ""
+
     if request.method == "POST":
+        # 1. Get textarea values (may be overwritten by file)
+        resume_text = request.form.get("resume", "").strip()
+        jd_text    = request.form.get("jobdesc", "").strip()
 
-        resume_text = request.form.get("resume", "")
-        jd_text = request.form.get("jobdesc", "")
-
-        # 🔥 Handle file upload (resume only)
+        # 2. Handle resume file upload → extract & override resume_text
         resume_file = request.files.get("resume_file")
-        if resume_file and resume_file.filename != "":
-            resume_text += " " + extract_text_from_file(resume_file)
+        if resume_file and resume_file.filename:
+            extracted = extract_text_from_file(resume_file)
+            if extracted.strip():
+                resume_text = extracted.strip()   # ← this is the key: show extracted text in textarea
 
-        # Extract skills
+        # 3. Always compare what's now in the textareas
         resume_skills = extract_skills(resume_text)
-        jd_skills = extract_skills(jd_text)
+        jd_skills     = extract_skills(jd_text)
 
-        matched = sorted(list(resume_skills & jd_skills))
-        missing = sorted(list(jd_skills - resume_skills))
-        extra = sorted(list(resume_skills - jd_skills))
         matched = sorted(resume_skills & jd_skills)
         missing = sorted(jd_skills - resume_skills)
-        extra = sorted(resume_skills - jd_skills)
+        extra   = sorted(resume_skills - jd_skills)
 
         if jd_skills:
-            score = int(len(matched) / len(jd_skills) * 100)
             score = int((len(matched) / len(jd_skills)) * 100)
-
             if score >= 80:
                 chances = "High"
             elif score >= 50:
                 chances = "Medium"
             else:
                 chances = "Low"
-    else:
-        # GET request → reset everything
-        matched, missing, extra = [], [], []
-        score = 0
-        chances = "N/A"
 
     return render_template(
         "index.html",
-@@ -127,5 +135,7 @@ def home():
+        matched=matched,
+        missing=missing,
+        extra=extra,
         score=score,
-        chances=chances
+        chances=chances,
+        resume_text=resume_text,   # preserved / filled from PDF
+        jd_text=jd_text
     )
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
-    app.run(debug=True)
+    # For local dev only – Vercel ignores this
+    app.run(host="0.0.0.0", port=5000, debug=True)
